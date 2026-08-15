@@ -22,6 +22,12 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/api/auth", authRoute);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/analytics", analyticsRoutes);
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
@@ -34,10 +40,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use("/api/auth", authRoute);
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/payment", paymentRoutes);
-app.use("/api/analytics", analyticsRoutes);
+
 
 module.exports = app;
