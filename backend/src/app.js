@@ -5,16 +5,34 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const path = require("path");
 
 const app = express();
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      process.env.FRONTEND_URL,
+    ],
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  app.use((req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("ShopNest API is running in Development mode...");
+  });
+}
 
 app.use("/api/auth", authRoute);
 app.use("/api/products", productRoutes);
